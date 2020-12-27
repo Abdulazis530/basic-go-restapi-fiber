@@ -3,12 +3,28 @@ package book
 import (
 	"fmt"
 
+	"github.com/Abdulazis530/basic-go-restapi-fiber/db"
 	"github.com/gofiber/fiber"
+	"github.com/jinzhu/gorm"
 )
 
+type Book struct {
+	gorm.Model
+	Title  string `json:"title"`
+	Author string `json:"author"`
+	Rating int    `json:"rating"`
+}
+
 func GetBooks(c *fiber.Ctx) {
-	fmt.Println("here")
-	c.Send(("All Books"))
+	dBase := db.DBconn
+	var books []Book
+	dBase.Find(&books)
+
+	err := c.JSON(books)
+
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func GetBook(c *fiber.Ctx) {
